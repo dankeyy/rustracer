@@ -1,5 +1,6 @@
 use std::ops::*;
 
+
 pub struct Vector3 {
     pub x: f64,
     pub y: f64,
@@ -8,13 +9,6 @@ pub struct Vector3 {
 
 
 impl Vector3 {
-
-    pub fn zero() -> Vector3 {
-        x = 0.0,
-        y = 0.0,
-        z = 0.0,
-    }
-
 
     pub fn new(x: f64, y: f64, z: f64) -> Vector3 {
         Vector3 { 
@@ -25,7 +19,16 @@ impl Vector3 {
     }
 
 
-    pub fn cross(&u: Vector3, &v: &Vector3) -> Vector3 {
+    pub fn zeros() -> Vector3 {
+        Vector3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+
+
+    pub fn cross(u: Vector3, v: Vector3) -> Vector3 {
         Vector3 {
             x: u.y * v.z - v.y * u.z,
             y: u.x * v.z - v.x * u.z,
@@ -34,31 +37,36 @@ impl Vector3 {
     }
 
 
-    pub fn dot(&u: Vector3, &v: &Vector3) -> f64 {
+    pub fn dot(u: Vector3, v: Vector3) -> f64 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
 
     pub fn magnitude(&self) -> f64 {
-        dot(&self, &self).sqrt()
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
+
+    pub fn scaled(&self, n: f64) -> Vector3 {
+        Vector3 {
+            x: self.x * n,
+            y: self.y * n,
+            z: self.z * n,
+        }
     }
 
 
     pub fn normalize(&self) -> Vector3 {
-        let n: f64 = self.magnitude();
-
-        Vector3 { 
-            x: self.x / n,
-            y: self.y / n,
-            z: self.z / n,
-        }
+        self.scaled(1.0 / self.magnitude())
     }
 
 }
+
+
 impl Add for Vector3 {
     type Output = Vector3;
 
-    fn add(&self, other: &Vector3) -> Vector3 {
+    fn add(self, other: Vector3) -> Vector3 {
         Vector3 {
             x: self.x + other.x,
             y: self.y + other.y,
@@ -68,11 +76,10 @@ impl Add for Vector3 {
 }
 
 
-
 impl Sub for Vector3 {
     type Output = Vector3;
 
-    fn sub(&self, other: &Vector3) -> Vector3 {
+    fn sub(self, other: Vector3) -> Vector3 {
         Vector3 {
             x: self.x - other.x,
             y: self.y - other.y,
@@ -85,7 +92,7 @@ impl Sub for Vector3 {
 impl Mul for Vector3 {
     type Output = Vector3;
 
-    fn mul(&self, other: &Vector3) -> Vector3 {
+    fn mul(self, other: Vector3) -> Vector3 {
         Vector3 {
             x: self.x * other.x,
             y: self.y * other.y,
@@ -98,7 +105,7 @@ impl Mul for Vector3 {
 impl Div for Vector3 {
     type Output = Vector3;
 
-    fn div(&self, other: &Vector3) -> Vector3 {
+    fn div(self, other: Vector3) -> Vector3 {
         Vector3 {
             x: self.x / other.x,
             y: self.y / other.y,
@@ -111,11 +118,72 @@ impl Div for Vector3 {
 impl Neg for Vector3 {
     type Output = Vector3;
 
-    fn neg(&self, other: &Vector3) -> Vector3 {
+    fn neg(self) -> Vector3 {
         Vector3 {
-            x: -self.x
-            y: -self.y
-            z: -self.z
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
+    }
+}
+
+
+impl AddAssign for Vector3 {
+
+    fn add_assign(&mut self, other: Vector3) {
+        *self = Vector3 {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+
+impl SubAssign for Vector3 {
+
+    fn sub_assign(&mut self, other: Vector3) {
+        *self = Vector3 {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+}
+
+
+impl MulAssign for Vector3 {
+
+    fn mul_assign(&mut self, other: Vector3) {
+        *self = Vector3 {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+        }
+    }
+}
+
+
+impl DivAssign for Vector3 {
+
+    fn div_assign(&mut self, other: Vector3) {
+        *self = Vector3 {
+            x: self.x / other.x,
+            y: self.y / other.y,
+            z: self.z / other.z,
+        }
+    }
+}
+
+
+impl Mul<Vector3> for f64 {
+    type Output = Vector3;
+
+    fn mul(self, v: Vector3) -> Vector3 {
+        Vector3 {
+            x: self * v.x,
+            y: self * v.y,
+            z: self * v.z,
         }
     }
 }

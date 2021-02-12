@@ -1,4 +1,5 @@
-
+mod vectors;
+use vectors::Vector3;
 
 const WIDTH: u32 = 256;
 const HEIGHT: u32 = 256;
