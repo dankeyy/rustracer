@@ -8,6 +8,10 @@ pub struct Vector3 {
 }
 
 
+// pub type Point = Vector3; // 3D point
+pub type Color = Vector3; // RGB color
+
+
 impl Vector3 {
 
     pub fn new(x: f64, y: f64, z: f64) -> Vector3 {
@@ -19,12 +23,17 @@ impl Vector3 {
     }
 
 
-    pub fn zeros() -> Vector3 {
-        Vector3 {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
+    pub fn from_val(v: f64) -> Vector3 {
+        Vector3 { 
+            x: v,
+            y: v,
+            z: v,
         }
+    }
+
+
+    pub fn zeros() -> Vector3 {
+        Vector3::from_val(0.0)
     }
 
 
@@ -56,8 +65,13 @@ impl Vector3 {
     }
 
 
-    pub fn normalize(&self) -> Vector3 {
+    pub fn normalized(&self) -> Vector3 { // unit vector
         self.scaled(1.0 / self.magnitude())
+    }
+
+
+    pub fn print(&self) {
+        println!("{} {} {}", self.x, self.y, self.z);
     }
 
 }
@@ -187,4 +201,3 @@ impl Mul<Vector3> for f64 {
         }
     }
 }
-
