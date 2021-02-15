@@ -1,6 +1,6 @@
 use std::ops::*;
 
-
+#[derive(Copy, Clone)]
 pub struct Vector3 {
     pub x: f64,
     pub y: f64,
@@ -8,22 +8,26 @@ pub struct Vector3 {
 }
 
 
-// pub type Point = Vector3; // 3D point
+pub type Point3 = Vector3; // 3D point
 pub type Color = Vector3; // RGB color
 
 
 impl Vector3 {
 
     pub fn new(x: f64, y: f64, z: f64) -> Vector3 {
+        Vector3 { x, y, z }
+
+    }
+    pub fn newi(x: i32, y: i32, z: i32) -> Vector3 {
         Vector3 { 
-            x: x,
-            y: y,
-            z: z,
+            x: x as f64,
+            y: y as f64,
+            z: z as f64,
         }
+
     }
 
-
-    pub fn from_val(v: f64) -> Vector3 {
+    pub fn fromv(v: f64) -> Vector3 {
         Vector3 { 
             x: v,
             y: v,
@@ -33,7 +37,7 @@ impl Vector3 {
 
 
     pub fn zeros() -> Vector3 {
-        Vector3::from_val(0.0)
+        Vector3::fromv(0.0)
     }
 
 
@@ -50,9 +54,13 @@ impl Vector3 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
+    pub fn magnitude_squared(&self) -> f64 {
+        self.x * self.x + self.y * self.y + self.z * self.z
+    }
+    
 
     pub fn magnitude(&self) -> f64 {
-        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+        self.magnitude_squared().sqrt()
     }
 
 
@@ -198,6 +206,83 @@ impl Mul<Vector3> for f64 {
             x: self * v.x,
             y: self * v.y,
             z: self * v.z,
+        }
+    }
+}
+
+
+impl Mul<f64> for Vector3 {
+    type Output = Vector3;
+
+    fn mul(self, n: f64) -> Vector3 {
+        Vector3 {
+            x: self.x * n,
+            y: self.y * n,
+            z: self.z * n,
+        }
+    }
+}
+
+
+impl Mul<i32> for Vector3 {
+    type Output = Vector3;
+
+    fn mul(self, n: i32) -> Vector3 {
+        Vector3 {
+            x: self.x * n as f64,
+            y: self.y * n as f64,
+            z: self.z * n as f64,
+        }
+    }
+}
+
+
+impl Add<f64> for Vector3 {
+    type Output = Vector3;
+
+    fn add(self, n: f64) -> Vector3 {
+        Vector3 {
+            x: self.x + n,
+            y: self.y + n,
+            z: self.z + n,
+        }
+    }
+}
+
+
+impl Add<Vector3> for f64 {
+    type Output = Vector3;
+
+    fn add(self, v: Vector3) -> Vector3 {
+        Vector3 {
+            x: self + v.x,
+            y: self + v.y,
+            z: self + v.z,
+        }
+    }
+}
+
+
+impl Add<i32> for Vector3 {
+    type Output = Vector3;
+
+    fn add(self, n: i32) -> Vector3 {
+        Vector3 {
+            x: self.x + n as f64,
+            y: self.y + n as f64,
+            z: self.z + n as f64,
+        }
+    }
+}
+
+impl Add<Vector3> for i32 {
+    type Output = Vector3;
+
+    fn add(self, v: Vector3) -> Vector3 {
+        Vector3 {
+            x: self as f64 + v.x,
+            y: self as f64 + v.y,
+            z: self as f64 + v.z,
         }
     }
 }
