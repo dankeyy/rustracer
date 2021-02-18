@@ -8,13 +8,13 @@ pub struct HittableList {
 
 impl HittableList {
 
-    fn new() -> HittableList{
+    pub fn new() -> HittableList{
         HittableList {
             objects: Vec::new()
         }
     }
 
-    fn add(&self, object: Box<dyn Hittable>) {
+    pub fn add(&self, object: Box<dyn Hittable>) {
         self.objects.push(object);
     }
 }
