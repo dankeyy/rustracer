@@ -1,8 +1,8 @@
-use crate::{hittable::*, vectors::*};
+use crate::{hittable::*, vectors::*, rays::*};
 
-pub struct sphere {
-    center: Point3;
-    radius: f64;
+pub struct Sphere {
+    center: Point3,
+    radius: f64,
 }
 
 
@@ -15,14 +15,14 @@ impl Sphere {
 }
 
 
-impl hittable for sphere {
+impl Hittable for Sphere {
 
-    fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: hit_record) -> bool {
+    fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let oc: Vector3 = r.origin - self.center;
 
         let a: f64 = r.direction.magnitude_squared(); // remember vec dotted with itself is the equivalent to its length squared
         let half_b: f64 = Vector3::dot(oc, r.direction); // 2 cancelled out
-        let c: f64 = oc.magnitude_squared() - radius * radius;
+        let c: f64 = oc.magnitude_squared() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c; // here too
         if discriminant < 0.0 {
@@ -39,8 +39,8 @@ impl hittable for sphere {
         }
 
         rec.t = root;
-        rec.p = r.at(rec.t)
-        let outward_normal = (rec.p - self.center) / radius;
+        rec.p = r.at(rec.t);
+        let outward_normal = (rec.p - self.center) / self.radius;
         rec.set_face_normal(r, outward_normal);
 
         return true;

@@ -224,6 +224,19 @@ impl Mul<f64> for Vector3 {
 }
 
 
+impl Div<f64> for Vector3 {
+    type Output = Vector3;
+
+    fn div(self, n: f64) -> Vector3 {
+        Vector3 {
+            x: self.x / n,
+            y: self.y / n,
+            z: self.z / n,
+        }
+    }
+}
+
+
 impl Mul<i32> for Vector3 {
     type Output = Vector3;
 
