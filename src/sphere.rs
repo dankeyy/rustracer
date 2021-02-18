@@ -7,7 +7,7 @@ pub struct Sphere {
 
 
 impl Sphere {
-    fn new(center: Point3, radius: f64) -> Sphere {
+    pub fn new(center: Point3, radius: f64) -> Sphere {
         Sphere { center, radius }
     }
 
@@ -29,8 +29,7 @@ impl Hittable for Sphere {
             return false
         }
 
-        let squared: f64 = discriminant.sqrt();
-        let root = ( -half_b -discriminant.sqrt() ) / a;
+        let mut root = ( -half_b -discriminant.sqrt() ) / a;
         if root < t_min || root > t_max {
             root = ( -half_b +discriminant.sqrt() ) / a;
             if root < t_min || root > t_max {

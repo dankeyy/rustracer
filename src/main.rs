@@ -12,7 +12,7 @@ use crate::hittable_list::*;
 use crate::sphere::*;
 
 
-fn coloray(r: Ray, world: Box<dyn Hittable>) -> Color {
+fn coloray(r: Ray, world: &dyn Hittable) -> Color {
     let mut rec = HitRecord::new();
     if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
         return 0.5 * (rec.normal + Color::newi(1,1,1))
@@ -35,9 +35,9 @@ fn main() {
     
 
     // world
-    let world = HittableList::new();
-    world.add(Sphere::new( Point3::newi(0, 0, -1), 0.5 ));
-    world.add(Sphere::new( Point3::new(0.0, 100.5, -1.0), 0.5 ));
+    let mut world = HittableList::new();
+    world.add(Box::new(Sphere::new( Point3::newi(0, 0, -1), 0.5 )));
+    world.add(Box::new(Sphere::new( Point3::new(0.0, 100.5, -1.0), 0.5 )));
 
 
     // camera
@@ -61,7 +61,7 @@ fn main() {
             let v = j as f64 / (HEIGHT - 1) as f64;
 
             let r: Ray = Ray::new(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            let pixel_color: Color = coloray(r);
+            let pixel_color: Color = coloray(r, &world);
             write_color(pixel_color);
 
         }

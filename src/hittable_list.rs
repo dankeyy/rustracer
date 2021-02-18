@@ -14,7 +14,7 @@ impl HittableList {
         }
     }
 
-    pub fn add(&self, object: Box<dyn Hittable>) {
+    pub fn add(&mut self, object: Box<dyn Hittable>) {
         self.objects.push(object);
     }
 }
@@ -22,8 +22,8 @@ impl HittableList {
 
 impl Hittable for HittableList {
     fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let hit_anything = false;
-        let closest_so_far = t_max;
+        let mut hit_anything = false;
+        let mut closest_so_far = t_max;
 
         for object in self.objects.iter() {
             let mut tmp_rec = HitRecord::new();
