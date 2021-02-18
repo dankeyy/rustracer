@@ -10,15 +10,15 @@ use crate::rays::Ray;
 fn sphere_hit(center: Point3, radius: f64, r: Ray) -> f64 {
     let oc: Vector3 = r.origin - center;
 
-    let a: f64 = Vector3::dot(r.direction, r.direction);
-    let b: f64 = 2.0 * Vector3::dot(oc, r.direction);
-    let c: f64 = Vector3::dot(oc, oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
+    let a: f64 = r.direction.magnitude_squared(); // remember vec dotted with itself is the equivalent to its length squared
+    let half_b: f64 = Vector3::dot(oc, r.direction); // 2 cancelled out
+    let c: f64 = oc.magnitude_squared() - radius * radius;
+    let discriminant = half_b * half_b - a * c; // here too
 
     if discriminant < 0.0 {
         -1.0
     } else {
-        ( -b - discriminant.sqrt() ) / (2.0 * a )
+        ( -half_b - discriminant.sqrt() ) / a
     }
 }
 
