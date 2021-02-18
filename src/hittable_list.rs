@@ -1,4 +1,4 @@
-use crate::{hittable::{Hittable, HitRecord}, vectors::*, rays::Ray};
+use crate::{hittable::{Hittable, HitRecord}, rays::Ray};
 
 
 pub struct HittableList {
