@@ -35,7 +35,7 @@ impl Hittable for Sphere {
             if root < t_min || root > t_max {
                 return false;
             }
-        }
+        } 
 
         rec.t = root;
         rec.p = r.at(rec.t);
