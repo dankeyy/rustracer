@@ -29,7 +29,7 @@ impl Camera {
     }
 
     pub fn get_ray(&self, u: f64, v: f64) -> Ray {
-        Ray::new(self.origin, self.lower_left_corner + u * self.horizontal + v * self.vertical)
+        Ray::new(self.origin, self.lower_left_corner + u * self.horizontal + v * self.vertical -self.origin)
     }
 
 }
