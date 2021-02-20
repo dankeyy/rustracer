@@ -8,9 +8,9 @@ pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
 pub fn write_color(pixels: Color, samples_per_pixel: u32) {
         let scale: f64 = 1.0 / (samples_per_pixel as f64);
 
-        let r: f64 = pixels.x * scale;
-        let b: f64 = pixels.y * scale;
-        let g: f64 = pixels.z * scale;
+        let r: f64 = (pixels.x * scale).sqrt();
+        let b: f64 = (pixels.y * scale).sqrt();
+        let g: f64 = (pixels.z * scale).sqrt();
 
 
         println!("{} {} {}", 

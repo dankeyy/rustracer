@@ -98,9 +98,9 @@ impl Vector3 {
 
         let mut rng = thread_rng();
         Vector3 {
-            x: rng.gen_range(min..max), 
-            y: rng.gen_range(min..max), 
-            z: rng.gen_range(min..max), 
+            x: rng.gen_range(min..=max), 
+            y: rng.gen_range(min..=max), 
+            z: rng.gen_range(min..=max), 
         }
     }
 
@@ -114,6 +114,21 @@ impl Vector3 {
         }
     }
 
+
+    pub fn random_in_unit_vector() -> Vector3 {
+        Vector3::random_in_unit_sphere().normalized()
+    }
+
+
+    pub fn random_in_hemisphere(normal: Vector3) -> Vector3 {
+        let in_unit_sphere: Vector3 = Vector3::random_in_unit_vector();
+
+        if Vector3::dot(in_unit_sphere, normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
+    }
 }
 
 
