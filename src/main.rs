@@ -49,7 +49,6 @@ fn main() {
     world.add(Box::new(Sphere::new( Point3::new(0.0, 0.0, -1.0), 0.5 )));
     world.add(Box::new(Sphere::new( Point3::new(0.0, -100.5, -1.0), 100.0 )));
 
-
     // camera
     let cam = Camera::new();
 

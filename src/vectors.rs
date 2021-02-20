@@ -1,4 +1,5 @@
 use std::ops::*;
+use rand::prelude::*;
 
 #[derive(Copy, Clone)]
 pub struct Vector3 {
@@ -80,6 +81,37 @@ impl Vector3 {
 
     pub fn print(&self) {
         println!("{} {} {}", self.x, self.y, self.z);
+    }
+
+
+    pub fn random() -> Vector3 {
+        let mut rng = thread_rng();
+
+        Vector3 {
+            x: rng.gen::<f64>(), 
+            y: rng.gen::<f64>(), 
+            z: rng.gen::<f64>(), 
+        }
+    }
+
+    pub fn random_by_range(min: f64, max: f64) -> Vector3 {
+
+        let mut rng = thread_rng();
+        Vector3 {
+            x: rng.gen_range(min..max), 
+            y: rng.gen_range(min..max), 
+            z: rng.gen_range(min..max), 
+        }
+    }
+
+
+    pub fn random_in_unit_sphere() -> Vector3 {
+        loop {
+            let p: Vector3 = Vector3::random_by_range(-1.0, 1.0);
+            if p.magnitude_squared() < 1.0 {
+                return p;
+            }
+        }
     }
 
 }
