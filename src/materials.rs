@@ -30,7 +30,7 @@ impl Material for Lambertian {
     }
 
 
-    fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray{
+    fn get_scatter_ray(&self, _r_in: Ray, rec: &HitRecord) -> Ray{
         let mut scatter_direction: Vector3 = rec.normal + Vector3::random_unit_vector();
         if scatter_direction.near_zero(){
             scatter_direction = rec.normal;
@@ -47,12 +47,16 @@ impl Material for Lambertian {
 #[derive(Copy, Clone)]
 pub struct Metal {
     pub albedo: Color,
+    pub fuzz: f64,
 }
 
 
 impl Metal {
-    pub fn new(albedo: Color) -> Metal { 
-        Metal {albedo}
+    pub fn new(albedo: Color, f: f64) -> Metal { 
+        Metal {
+            albedo, 
+            fuzz: if f < 1.0 {f} else {1.0}
+        }
     }
 }
 
@@ -70,6 +74,6 @@ impl Material for Metal {
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray{
         let reflected = Vector3::reflect(r_in.direction.normalized(), rec.normal);
-        Ray::new(rec.p, reflected)
+        Ray::new(rec.p, reflected + self.fuzz * Vector3::random_in_unit_sphere())
     }
 }
