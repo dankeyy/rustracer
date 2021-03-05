@@ -8,6 +8,8 @@
         "out",
         "over",
         "perp",
-        "r"
+        "powf",
+        "r",
+        "schlick"
     ]
 }

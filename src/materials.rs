@@ -1,4 +1,5 @@
 use crate::{vectors::*, rays::*, hittable::*};
+use rand::prelude::*;
 
 
 pub trait Material {
@@ -88,6 +89,12 @@ impl Dielectric {
     pub fn new(index_of_refraction: f64) -> Dielectric {
         Dielectric {ir: index_of_refraction}
     }
+
+    fn reflectance(cosine: f64, ref_idx: f64) -> f64{
+        // Christophe Schlick's approximation for reflectance.
+        let r0: f64 = f64::powf((1.0 - ref_idx) / (1.0 + ref_idx), 2.0);
+        r0 + (1.0 - r0) * f64::powf(1.0 - cosine, 5.0)
+    }
 }
 
 impl Material for Dielectric {
@@ -97,10 +104,20 @@ impl Material for Dielectric {
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray {
         let refraction_ratio: f64 = if rec.front_face {1.0/self.ir} else {self.ir};
-
         let unit_direction = r_in.direction.normalized();
-        let refracted = Vector3::refract(unit_direction, rec.normal, refraction_ratio);
-        
-        Ray::new(rec.p, refracted)
+
+        let cos_theta =  Vector3::dot(-unit_direction, rec.normal).min(1.0);
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+        let cannot_refract: bool = refraction_ratio * sin_theta > 1.0;
+        let mut rng = thread_rng();
+
+        let direction: Vector3 = 
+            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen::<f64>()) {
+                Vector3::reflect(unit_direction, rec.normal)
+            } else {
+                Vector3::refract(unit_direction, rec.normal, refraction_ratio)
+            };
+
+        Ray::new(rec.p, direction)
     }
 }

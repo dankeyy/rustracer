@@ -62,13 +62,14 @@ fn main() {
     let mut world = HittableList::new();
 
     let ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let center = Arc::new(Dielectric::new(1.5));
+    let center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let left   = Arc::new(Dielectric::new(1.5));
-    let right  = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let right  = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0, ground)));
     world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, center)));
-    world.add(Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, left)));
+    world.add(Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, left.clone())));
+    world.add(Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), -0.4, left)));
     world.add(Box::new(Sphere::new(Point3::new(1.0, 0.0, -1.0), 0.5, right)));
 
     // camera
