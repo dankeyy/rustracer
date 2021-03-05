@@ -1,12 +1,15 @@
-use crate::{vectors::*};
+use crate::{vectors::*, materials::*};
 use crate::rays::Ray;
+use std::sync::Arc;
+// use std::rc::Rc;
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vector3,
     pub t: f64,
-    pub front_face: bool,
+    pub front_face: bool,   
+    pub mat: Arc<dyn Material>,
 }
 
 
@@ -18,6 +21,7 @@ impl HitRecord {
             normal: Vector3::zeros(),
             t: 0.0,
             front_face: false,
+            mat: Arc::new(Lambertian::new(Color::zeros())),
         }
     }
 

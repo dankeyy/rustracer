@@ -115,19 +115,30 @@ impl Vector3 {
     }
 
 
-    pub fn random_in_unit_vector() -> Vector3 {
+    pub fn random_unit_vector() -> Vector3 {
         Vector3::random_in_unit_sphere().normalized()
     }
 
 
     pub fn random_in_hemisphere(normal: Vector3) -> Vector3 {
-        let in_unit_sphere: Vector3 = Vector3::random_in_unit_vector();
+        let in_unit_sphere: Vector3 = Vector3::random_unit_vector();
 
         if Vector3::dot(in_unit_sphere, normal) > 0.0 {
             in_unit_sphere
         } else {
             -in_unit_sphere
         }
+    }
+
+
+    pub fn near_zero(&self) -> bool {
+        let s: f64 = 1e-8;
+        (self.x < s) && (self.y < s) && (self.z < s)
+    }
+
+
+    pub fn reflect(v: Vector3, n: Vector3) -> Vector3{
+        v - 2.0 * Vector3::dot(v, n) * n
     }
 }
 
