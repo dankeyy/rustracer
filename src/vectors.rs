@@ -1,6 +1,7 @@
 use std::ops::*;
 use rand::prelude::*;
 
+
 #[derive(Copy, Clone)]
 pub struct Vector3 {
     pub x: f64,
@@ -19,6 +20,8 @@ impl Vector3 {
         Vector3 { x, y, z }
 
     }
+
+
     pub fn newi(x: i32, y: i32, z: i32) -> Vector3 {
         Vector3 { 
             x: x as f64,
@@ -27,6 +30,7 @@ impl Vector3 {
         }
 
     }
+
 
     pub fn fromv(v: f64) -> Vector3 {
         Vector3 { 
@@ -55,6 +59,7 @@ impl Vector3 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
+    
     pub fn magnitude_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
@@ -139,6 +144,17 @@ impl Vector3 {
 
     pub fn reflect(v: Vector3, n: Vector3) -> Vector3{
         v - 2.0 * Vector3::dot(v, n) * n
+    }
+
+
+    pub fn refract(uv: Vector3, n: Vector3, etai_over_etat: f64) -> Vector3{
+        let cos_theta: f64 = Vector3::dot(-uv, n).min(1.0);
+
+        let r_out_perp = etai_over_etat * (uv + cos_theta * n);
+        let r_out_parallel = -((1.0 - r_out_perp.magnitude_squared()).abs().sqrt()) * n;
+
+        r_out_perp + r_out_parallel
+
     }
 }
 
