@@ -1,6 +1,7 @@
 {
     "cSpell.ignoreWords": [
         "coloray",
+        "consts",
         "etai",
         "etat",
         "fromv",
@@ -10,6 +11,7 @@
         "perp",
         "powf",
         "r",
-        "schlick"
+        "schlick",
+        "vfov"
     ]
 }

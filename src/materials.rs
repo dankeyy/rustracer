@@ -64,7 +64,7 @@ impl Metal {
 
 impl Material for Metal {
     fn scatter(&self, rec: &HitRecord, scattered: Ray) -> bool {
-       Vector3::dot(scattered.direction, rec.normal) > 0.0
+       Vector3::dot(&scattered.direction, &rec.normal) > 0.0
     }
     
     
@@ -74,7 +74,7 @@ impl Material for Metal {
 
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray{
-        let reflected = Vector3::reflect(r_in.direction.normalized(), rec.normal);
+        let reflected = Vector3::reflect(&r_in.direction.normalized(), &rec.normal);
         Ray::new(rec.p, reflected + self.fuzz * Vector3::random_in_unit_sphere())
     }
 }
@@ -92,8 +92,8 @@ impl Dielectric {
 
     fn reflectance(cosine: f64, ref_idx: f64) -> f64{
         // Christophe Schlick's approximation for reflectance.
-        let r0: f64 = f64::powf((1.0 - ref_idx) / (1.0 + ref_idx), 2.0);
-        r0 + (1.0 - r0) * f64::powf(1.0 - cosine, 5.0)
+        let r0: f64 = ((1.0 - ref_idx) / (1.0 + ref_idx)).powf(2.0);
+        r0 + (1.0 - r0) * ((1.0 - cosine).powf(5.0))
     }
 }
 
@@ -104,18 +104,18 @@ impl Material for Dielectric {
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray {
         let refraction_ratio: f64 = if rec.front_face {1.0/self.ir} else {self.ir};
-        let unit_direction = r_in.direction.normalized();
+        let unit_direction: Vector3 = r_in.direction.normalized();
 
-        let cos_theta =  Vector3::dot(-unit_direction, rec.normal).min(1.0);
-        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+        let cos_theta: f64 =  Vector3::dot(&-unit_direction, &rec.normal).min(1.0);
+        let sin_theta: f64 = (1.0 - cos_theta * cos_theta).sqrt();
         let cannot_refract: bool = refraction_ratio * sin_theta > 1.0;
         let mut rng = thread_rng();
 
         let direction: Vector3 = 
-            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen::<f64>()) {
-                Vector3::reflect(unit_direction, rec.normal)
+            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen_range(0.0..1.0)) {
+                Vector3::reflect(&unit_direction, &rec.normal)
             } else {
-                Vector3::refract(unit_direction, rec.normal, refraction_ratio)
+                Vector3::refract(&unit_direction, &rec.normal, refraction_ratio)
             };
 
         Ray::new(rec.p, direction)

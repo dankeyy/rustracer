@@ -46,16 +46,16 @@ impl Vector3 {
     }
 
 
-    pub fn cross(u: Vector3, v: Vector3) -> Vector3 {
+    pub fn cross(u: &Vector3, v: &Vector3) -> Vector3 {
         Vector3 {
-            x: u.y * v.z - v.y * u.z,
-            y: u.x * v.z - v.x * u.z,
-            z: u.x * v.y - v.x * u.y,
+            x: u.y * v.z - u.z * v.y,
+            y: u.z * v.x - u.x * v.z,
+            z: u.x * v.y - u.y * v.x,
         }
     }
 
 
-    pub fn dot(u: Vector3, v: Vector3) -> f64 {
+    pub fn dot(u: &Vector3, v: &Vector3) -> f64 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
@@ -125,10 +125,10 @@ impl Vector3 {
     }
 
 
-    pub fn random_in_hemisphere(normal: Vector3) -> Vector3 {
+    pub fn random_in_hemisphere(normal: &Vector3) -> Vector3 {
         let in_unit_sphere: Vector3 = Vector3::random_unit_vector();
 
-        if Vector3::dot(in_unit_sphere, normal) > 0.0 {
+        if Vector3::dot(&in_unit_sphere, normal) > 0.0 {
             in_unit_sphere
         } else {
             -in_unit_sphere
@@ -142,16 +142,20 @@ impl Vector3 {
     }
 
 
-    pub fn reflect(v: Vector3, n: Vector3) -> Vector3{
-        v - 2.0 * Vector3::dot(v, n) * n
+    pub fn reflect(v: &Vector3, n: &Vector3) -> Vector3{
+        (*v) - 2.0 * Vector3::dot(&v, &n) * (*n)
     }
 
 
-    pub fn refract(uv: Vector3, n: Vector3, etai_over_etat: f64) -> Vector3{
-        let cos_theta: f64 = Vector3::dot(-uv, n).min(1.0);
+    pub fn refract(uv: &Vector3, n: &Vector3, etai_over_etat: f64) -> Vector3{
+        let cos_theta: f64 = Vector3::dot(&-*uv, n).min(1.0);
 
-        let r_out_perp = etai_over_etat * (uv + cos_theta * n);
-        let r_out_parallel = -((1.0 - r_out_perp.magnitude_squared()).abs().sqrt()) * n;
+        let r_out_perp: Vector3 = etai_over_etat * ((*uv) + cos_theta * (*n));
+        let r_out_parallel: Vector3 = (1.0 - r_out_perp.magnitude_squared())
+                                      .abs()
+                                      .sqrt()
+                                      * (-1.0) 
+                                      * (*n);
 
         r_out_perp + r_out_parallel
 
@@ -310,6 +314,17 @@ impl Div<f64> for Vector3 {
     }
 }
 
+impl Div<i32> for Vector3 {
+    type Output = Vector3;
+
+    fn div(self, n: i32) -> Vector3 {
+        Vector3 {
+            x: self.x / n as f64,
+            y: self.y / n as f64,
+            z: self.z / n as f64,
+        }
+    }
+}
 
 impl Mul<i32> for Vector3 {
     type Output = Vector3;

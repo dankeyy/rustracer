@@ -21,6 +21,7 @@ use crate::{
 extern crate rand;
 use rand::prelude::*;
 use std::sync::Arc;
+// use std::f64::consts::PI;
 
 fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
     if depth <= 0 { return Color::zeros(); }
@@ -66,14 +67,22 @@ fn main() {
     let left   = Arc::new(Dielectric::new(1.5));
     let right  = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
-    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0, ground)));
-    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, center)));
-    world.add(Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, left.clone())));
-    world.add(Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), -0.4, left)));
-    world.add(Box::new(Sphere::new(Point3::new(1.0, 0.0, -1.0), 0.5, right)));
+    world.add(Box::new(Sphere::new(Point3::new( 0.0, -100.5, -1.0), 100.0, ground)));
+    world.add(Box::new(Sphere::new(Point3::new( 0.0,    0.0, -1.0),   0.5, center)));
+    world.add(Box::new(Sphere::new(Point3::new(-1.0,    0.0, -1.0),   0.5, left.clone())));
+    world.add(Box::new(Sphere::new(Point3::new(-1.0,    0.0, -1.0), -0.45, left)));
+    world.add(Box::new(Sphere::new(Point3::new( 1.0,    0.0, -1.0),   0.5, right)));
+
+    // let r = (PI / 4.0).cos();
+    // let left  = Arc::new(Lambertian::new(Color::newi(0,0,1)));
+    // let right = Arc::new(Lambertian::new(Color::newi(1,0,0)));
+
+    // world.add(Box::new(Sphere::new(Point3::new(-r, 0.0, -1.0), r, left)));
+    // world.add(Box::new(Sphere::new(Point3::new(r, 0.0, -1.0), r, right)));
+
 
     // camera
-    let cam = Camera::new();
+    let cam = Camera::new(Point3::newi(-2, 2, 1), Point3::newi(0, 0, -1), Point3::newi(0, 1, 0), 20.0, ASPECT_RATIO);
 
    // random setup
     let mut rng = thread_rng();
