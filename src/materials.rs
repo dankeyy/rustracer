@@ -103,7 +103,7 @@ impl Material for Dielectric {
     fn get_attenuation(&self) -> Color {Color::fromv(1.0)}
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray {
-        let refraction_ratio: f64 = if rec.front_face {1.0/self.ir} else {self.ir};
+        let refraction_ratio: f64 = if rec.front_face {1.0 / self.ir} else {self.ir};
         let unit_direction: Vector3 = r_in.direction.normalized();
 
         let cos_theta: f64 =  Vector3::dot(&-unit_direction, &rec.normal).min(1.0);
@@ -112,7 +112,7 @@ impl Material for Dielectric {
         let mut rng = thread_rng();
 
         let direction: Vector3 = 
-            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen_range(0.0..1.0)) {
+            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen::<f64>()) {
                 Vector3::reflect(&unit_direction, &rec.normal)
             } else {
                 Vector3::refract(&unit_direction, &rec.normal, refraction_ratio)

@@ -21,7 +21,6 @@ use crate::{
 extern crate rand;
 use rand::prelude::*;
 use std::sync::Arc;
-// use std::f64::consts::PI;
 
 fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
     if depth <= 0 { return Color::zeros(); }
@@ -36,9 +35,6 @@ fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
         if rec.mat.scatter(&rec, scatter_ray) {
             return attenuation * coloray(scatter_ray, world, depth -1);
         }
-
-        // let target: Point3 = rec.p + Point3::random_in_unit_sphere();
-        // return 0.5 * coloray(Ray::new(rec.p, target - rec.p), world, depth-1);//    (rec.normal + Color::fromv(1.0))
         return Color::zeros();
     }
 
@@ -56,32 +52,35 @@ fn random_scene() -> HittableList {
     world.add(Box::new(Sphere::new(Point3::new( 0.0, -1000.0, 0.0), 1000.0, ground)));
 
     let mut rng = thread_rng();
-    
+
+    let mut sphere_material: Arc<dyn Material>;
+
     for i in -11..11 {
         for j in -11..11 {
             let choose_mat = rng.gen::<f64>();
             let center = Point3::new(i as f64 + 0.9 * rng.gen::<f64>(), 0.2, j as f64 + 0.9 * rng.gen::<f64>());
-            
-            let sphere_material: Arc<dyn Material>;
 
-            if choose_mat < 0.8 {
-                // diffuse
-                let albedo = Color::random() * Color::random();
-                sphere_material = Arc::new(Lambertian::new(albedo));
+            if (center - Point3::new(4.0, 0.2, 0.0)).magnitude() > 0.9 {
 
-            } else if choose_mat < 0.95 {
-                // metal
-                let albedo = Color::random_by_range(0.5, 1.0);
-                let fuzz = rng.gen_range(0.0..0.5);
+                if choose_mat < 0.8 {
+                    // diffuse
+                    let albedo = Color::random() * Color::random();
+                    sphere_material = Arc::new(Lambertian::new(albedo));
+                    
+                } else if choose_mat < 0.95 {
+                    // metal
+                    let albedo = Color::random_by_range(0.5, 1.0);
+                    let fuzz = rng.gen_range(0.0..0.5);
 
-                sphere_material = Arc::new(Metal::new(albedo, fuzz));
+                    sphere_material = Arc::new(Metal::new(albedo, fuzz));
 
-            } else {
-                // glass
-                sphere_material = Arc::new(Dielectric::new(1.5));
+                } else {
+                    // glass
+                    sphere_material = Arc::new(Dielectric::new(1.5));
+                }
+
+                world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
             }
-
-            world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
 
         }
     }
@@ -104,38 +103,18 @@ fn random_scene() -> HittableList {
 fn main() {
 
     // image scaling
-    const ASPECT_RATIO: f64 = 3.0 / 2.0; //16.0 / 9.0;
-    const WIDTH: u32 = 1200; //400;
+    const ASPECT_RATIO: f64 = 3.0 / 2.0;
+    const WIDTH: u32 = 400;
     const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
-    const SAMPLES_PER_PIXEL: u32 = 500;
+    const SAMPLES_PER_PIXEL: u32 = 50;
     const MAX_DEPTH: u8 = 50;
 
     // world
     let world = random_scene();
-    // let mut world = HittableList::new();
-
-    // let ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    // let center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
-    // let left   = Arc::new(Dielectric::new(1.5));
-    // let right  = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
-
-    // world.add(Box::new(Sphere::new(Point3::new( 0.0, -100.5, -1.0), 100.0, ground)));
-    // world.add(Box::new(Sphere::new(Point3::new( 0.0,    0.0, -1.0),   0.5, center)));
-    // world.add(Box::new(Sphere::new(Point3::new(-1.0,    0.0, -1.0),   0.5, left.clone())));
-    // world.add(Box::new(Sphere::new(Point3::new(-1.0,    0.0, -1.0), -0.45, left)));
-    // world.add(Box::new(Sphere::new(Point3::new( 1.0,    0.0, -1.0),   0.5, right)));
-
-    // let r = (PI / 4.0).cos();
-    // let left  = Arc::new(Lambertian::new(Color::newi(0,0,1)));
-    // let right = Arc::new(Lambertian::new(Color::newi(1,0,0)));
-
-    // world.add(Box::new(Sphere::new(Point3::new(-r, 0.0, -1.0), r, left)));
-    // world.add(Box::new(Sphere::new(Point3::new(r, 0.0, -1.0), r, right)));
-
 
     // camera
     let look_from = Point3::newi(13, 2, 3);
-    let look_at = Point3::newi(0, 0, 0);
+    let look_at = Point3::zeros();
     let vup = Vector3::newi(0, 1, 0);
     let vfov = 20.0;
     let aperture = 0.1;

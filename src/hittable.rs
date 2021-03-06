@@ -1,7 +1,6 @@
 use crate::{vectors::*, materials::*};
 use crate::rays::Ray;
 use std::sync::Arc;
-// use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct HitRecord {
