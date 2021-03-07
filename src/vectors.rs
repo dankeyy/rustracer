@@ -4,9 +4,9 @@ use rand::prelude::*;
 
 #[derive(Copy, Clone)]
 pub struct Vector3 {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 
@@ -16,7 +16,7 @@ pub type Color = Vector3; // RGB color
 
 impl Vector3 {
 
-    pub fn new(x: f64, y: f64, z: f64) -> Vector3 {
+    pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
         Vector3 { x, y, z }
 
     }
@@ -24,15 +24,15 @@ impl Vector3 {
 
     pub fn newi(x: i32, y: i32, z: i32) -> Vector3 {
         Vector3 { 
-            x: x as f64,
-            y: y as f64,
-            z: z as f64,
+            x: x as f32,
+            y: y as f32,
+            z: z as f32,
         }
 
     }
 
 
-    pub fn fromv(v: f64) -> Vector3 {
+    pub fn fromv(v: f32) -> Vector3 {
         Vector3 { 
             x: v,
             y: v,
@@ -55,22 +55,22 @@ impl Vector3 {
     }
 
 
-    pub fn dot(u: &Vector3, v: &Vector3) -> f64 {
+    pub fn dot(u: &Vector3, v: &Vector3) -> f32 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
     
-    pub fn magnitude_squared(&self) -> f64 {
+    pub fn magnitude_squared(&self) -> f32 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
     
 
-    pub fn magnitude(&self) -> f64 {
+    pub fn magnitude(&self) -> f32 {
         self.magnitude_squared().sqrt()
     }
 
 
-    pub fn scaled(&self, n: f64) -> Vector3 {
+    pub fn scaled(&self, n: f32) -> Vector3 {
         Vector3 {
             x: self.x * n,
             y: self.y * n,
@@ -93,13 +93,13 @@ impl Vector3 {
         let mut rng = thread_rng();
 
         Vector3 {
-            x: rng.gen::<f64>(), 
-            y: rng.gen::<f64>(), 
-            z: rng.gen::<f64>(), 
+            x: rng.gen::<f32>(), 
+            y: rng.gen::<f32>(), 
+            z: rng.gen::<f32>(), 
         }
     }
 
-    pub fn random_by_range(min: f64, max: f64) -> Vector3 {
+    pub fn random_by_range(min: f32, max: f32) -> Vector3 {
 
         let mut rng = thread_rng();
         Vector3 {
@@ -137,7 +137,7 @@ impl Vector3 {
 
 
     pub fn near_zero(&self) -> bool {
-        let s: f64 = 1e-8;
+        let s: f32 = 1e-8;
         (self.x < s) && (self.y < s) && (self.z < s)
     }
 
@@ -147,8 +147,8 @@ impl Vector3 {
     }
 
 
-    pub fn refract(uv: &Vector3, n: &Vector3, etai_over_etat: f64) -> Vector3{
-        let cos_theta: f64 = Vector3::dot(&-*uv, n).min(1.0);
+    pub fn refract(uv: &Vector3, n: &Vector3, etai_over_etat: f32) -> Vector3{
+        let cos_theta: f32 = Vector3::dot(&-*uv, n).min(1.0);
 
         let r_out_perp: Vector3 = etai_over_etat * ((*uv) + cos_theta * (*n));
         let r_out_parallel: Vector3 = (1.0 - r_out_perp.magnitude_squared())
@@ -288,7 +288,7 @@ impl DivAssign for Vector3 {
 }
 
 
-impl Mul<Vector3> for f64 {
+impl Mul<Vector3> for f32 {
     type Output = Vector3;
 
     fn mul(self, v: Vector3) -> Vector3 {
@@ -301,10 +301,10 @@ impl Mul<Vector3> for f64 {
 }
 
 
-impl Mul<f64> for Vector3 {
+impl Mul<f32> for Vector3 {
     type Output = Vector3;
 
-    fn mul(self, n: f64) -> Vector3 {
+    fn mul(self, n: f32) -> Vector3 {
         Vector3 {
             x: self.x * n,
             y: self.y * n,
@@ -314,10 +314,10 @@ impl Mul<f64> for Vector3 {
 }
 
 
-impl Div<f64> for Vector3 {
+impl Div<f32> for Vector3 {
     type Output = Vector3;
 
-    fn div(self, n: f64) -> Vector3 {
+    fn div(self, n: f32) -> Vector3 {
         Vector3 {
             x: self.x / n,
             y: self.y / n,
@@ -331,9 +331,9 @@ impl Div<i32> for Vector3 {
 
     fn div(self, n: i32) -> Vector3 {
         Vector3 {
-            x: self.x / n as f64,
-            y: self.y / n as f64,
-            z: self.z / n as f64,
+            x: self.x / n as f32,
+            y: self.y / n as f32,
+            z: self.z / n as f32,
         }
     }
 }
@@ -343,18 +343,18 @@ impl Mul<i32> for Vector3 {
 
     fn mul(self, n: i32) -> Vector3 {
         Vector3 {
-            x: self.x * n as f64,
-            y: self.y * n as f64,
-            z: self.z * n as f64,
+            x: self.x * n as f32,
+            y: self.y * n as f32,
+            z: self.z * n as f32,
         }
     }
 }
 
 
-impl Add<f64> for Vector3 {
+impl Add<f32> for Vector3 {
     type Output = Vector3;
 
-    fn add(self, n: f64) -> Vector3 {
+    fn add(self, n: f32) -> Vector3 {
         Vector3 {
             x: self.x + n,
             y: self.y + n,
@@ -364,7 +364,7 @@ impl Add<f64> for Vector3 {
 }
 
 
-impl Add<Vector3> for f64 {
+impl Add<Vector3> for f32 {
     type Output = Vector3;
 
     fn add(self, v: Vector3) -> Vector3 {
@@ -382,9 +382,9 @@ impl Add<i32> for Vector3 {
 
     fn add(self, n: i32) -> Vector3 {
         Vector3 {
-            x: self.x + n as f64,
-            y: self.y + n as f64,
-            z: self.z + n as f64,
+            x: self.x + n as f32,
+            y: self.y + n as f32,
+            z: self.z + n as f32,
         }
     }
 }
@@ -394,9 +394,9 @@ impl Add<Vector3> for i32 {
 
     fn add(self, v: Vector3) -> Vector3 {
         Vector3 {
-            x: self as f64 + v.x,
-            y: self as f64 + v.y,
-            z: self as f64 + v.z,
+            x: self as f32 + v.x,
+            y: self as f32 + v.y,
+            z: self as f32 + v.z,
         }
     }
 }

@@ -6,7 +6,7 @@ use std::sync::Arc;
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vector3,
-    pub t: f64,
+    pub t: f32,
     pub front_face: bool,   
     pub mat: Arc<dyn Material>,
 }
@@ -32,5 +32,5 @@ impl HitRecord {
 
 
 pub trait Hittable{
-   fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool; 
+   fn hit(&self, r: Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool; 
 }

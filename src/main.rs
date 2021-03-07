@@ -27,7 +27,7 @@ fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
 
     let mut rec = HitRecord::new();
 
-    if world.hit(r, 0.001, f64::INFINITY, &mut rec) {
+    if world.hit(r, 0.001, f32::INFINITY, &mut rec) {
         
         let attenuation: Color = rec.mat.get_attenuation();
         let scatter_ray: Ray = rec.mat.get_scatter_ray(r, &rec);
@@ -39,7 +39,7 @@ fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
     }
 
     let unit_direction: Vector3 = r.direction.normalized();
-    let t: f64 = (unit_direction.y + 1.0) * 0.5;
+    let t: f32 = (unit_direction.y + 1.0) * 0.5;
 
     return (1.0 - t) * Color::fromv(1.0) + t * Color::new(0.5, 0.7, 1.0);
 }
@@ -53,33 +53,36 @@ fn random_scene() -> HittableList {
 
     let mut rng = thread_rng();
 
-    let mut sphere_material: Arc<dyn Material>;
+    // let mut sphere_material: Arc<dyn Material>;
 
     for i in -11..11 {
         for j in -11..11 {
-            let choose_mat = rng.gen::<f64>();
-            let center = Point3::new(i as f64 + 0.9 * rng.gen::<f64>(), 0.2, j as f64 + 0.9 * rng.gen::<f64>());
+            let choose_mat = rng.gen::<f32>();
+            let center = Point3::new(i as f32 + 0.9 * rng.gen::<f32>(), 0.2, j as f32 + 0.9 * rng.gen::<f32>());
 
             if (center - Point3::new(4.0, 0.2, 0.0)).magnitude() > 0.9 {
 
                 if choose_mat < 0.8 {
                     // diffuse
                     let albedo = Color::random() * Color::random();
-                    sphere_material = Arc::new(Lambertian::new(albedo));
+                    let sphere_material = Arc::new(Lambertian::new(albedo));
+                    world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
                     
                 } else if choose_mat < 0.95 {
                     // metal
                     let albedo = Color::random_by_range(0.5, 1.0);
                     let fuzz = rng.gen_range(0.0..0.5);
 
-                    sphere_material = Arc::new(Metal::new(albedo, fuzz));
+                    let sphere_material = Arc::new(Metal::new(albedo, fuzz));
+                    world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
 
                 } else {
                     // glass
-                    sphere_material = Arc::new(Dielectric::new(1.5));
+                    let sphere_material = Arc::new(Dielectric::new(1.5));
+                    world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
                 }
 
-                world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
+                // world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
             }
 
         }
@@ -103,10 +106,10 @@ fn random_scene() -> HittableList {
 fn main() {
 
     // image scaling
-    const ASPECT_RATIO: f64 = 3.0 / 2.0;
-    const WIDTH: u32 = 400;
-    const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
-    const SAMPLES_PER_PIXEL: u32 = 50;
+    const ASPECT_RATIO: f32 = 3.0 / 2.0;
+    const WIDTH: u32 = 200;
+    const HEIGHT: u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
+    const SAMPLES_PER_PIXEL: u32 = 500;
     const MAX_DEPTH: u8 = 50;
 
     // world
@@ -136,8 +139,8 @@ fn main() {
             let mut pixel_color = Color::zeros();
 
             for _s   in 0..100 {
-                let u = (i as f64 + rng.gen_range(0.0..1.0)) / ((WIDTH - 1) as f64);
-                let v = (j as f64 + rng.gen_range(0.0..1.0)) / ((HEIGHT - 1) as f64);
+                let u = (i as f32 + rng.gen_range(0.0..1.0)) / ((WIDTH - 1) as f32);
+                let v = (j as f32 + rng.gen_range(0.0..1.0)) / ((HEIGHT - 1) as f32);
 
                 let r: Ray = cam.get_ray(u, v);
                 pixel_color += coloray(r, &world, MAX_DEPTH);

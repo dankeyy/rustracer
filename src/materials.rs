@@ -27,7 +27,7 @@ impl Material for Lambertian {
 
 
     fn get_attenuation(&self) -> Color {
-        self.albedo.clone()
+        self.albedo//.clone()
     }
 
 
@@ -48,15 +48,15 @@ impl Material for Lambertian {
 #[derive(Copy, Clone)]
 pub struct Metal {
     pub albedo: Color,
-    pub fuzz: f64,
+    pub fuzz: f32,
 }
 
 
 impl Metal {
-    pub fn new(albedo: Color, f: f64) -> Metal { 
+    pub fn new(albedo: Color, f: f32) -> Metal { 
         Metal {
             albedo, 
-            fuzz: if f < 1.0 {f} else {1.0}
+            fuzz: f.min(1.0)
         }
     }
 }
@@ -69,7 +69,7 @@ impl Material for Metal {
     
     
     fn get_attenuation(&self) -> Color {
-        self.albedo.clone()
+        self.albedo//.clone()
     }
 
 
@@ -80,19 +80,20 @@ impl Material for Metal {
 }
 
 // Dielectric
+#[derive(Copy, Clone)]
 pub struct Dielectric {
-    pub ir: f64,
+    pub ir: f32,
 }
 
 
 impl Dielectric {
-    pub fn new(index_of_refraction: f64) -> Dielectric {
+    pub fn new(index_of_refraction: f32) -> Dielectric {
         Dielectric {ir: index_of_refraction}
     }
 
-    fn reflectance(cosine: f64, ref_idx: f64) -> f64{
+    fn reflectance(cosine: f32, ref_idx: f32) -> f32{
         // Christophe Schlick's approximation for reflectance.
-        let r0: f64 = ((1.0 - ref_idx) / (1.0 + ref_idx)).powf(2.0);
+        let r0: f32 = ((1.0 - ref_idx) / (1.0 + ref_idx)).powf(2.0);
         r0 + (1.0 - r0) * ((1.0 - cosine).powf(5.0))
     }
 }
@@ -103,16 +104,16 @@ impl Material for Dielectric {
     fn get_attenuation(&self) -> Color {Color::fromv(1.0)}
 
     fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray {
-        let refraction_ratio: f64 = if rec.front_face {1.0 / self.ir} else {self.ir};
+        let refraction_ratio: f32 = if rec.front_face {1.0 / self.ir} else {self.ir};
         let unit_direction: Vector3 = r_in.direction.normalized();
 
-        let cos_theta: f64 =  Vector3::dot(&-unit_direction, &rec.normal).min(1.0);
-        let sin_theta: f64 = (1.0 - cos_theta * cos_theta).sqrt();
+        let cos_theta: f32 =  Vector3::dot(&-unit_direction, &rec.normal).min(1.0);
+        let sin_theta: f32 = (1.0 - cos_theta * cos_theta).sqrt();
         let cannot_refract: bool = refraction_ratio * sin_theta > 1.0;
         let mut rng = thread_rng();
 
         let direction: Vector3 = 
-            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen::<f64>()) {
+            if cannot_refract || (Dielectric::reflectance(cos_theta, refraction_ratio) > rng.gen::<f32>()) {
                 Vector3::reflect(&unit_direction, &rec.normal)
             } else {
                 Vector3::refract(&unit_direction, &rec.normal, refraction_ratio)

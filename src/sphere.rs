@@ -4,13 +4,13 @@ use std::sync::Arc;
 
 pub struct Sphere {
     pub center: Point3,
-    pub radius: f64,
+    pub radius: f32,
     pub mat: Arc< dyn Material>,
 }
 
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64, mat: Arc<dyn Material>) -> Sphere {
+    pub fn new(center: Point3, radius: f32, mat: Arc<dyn Material>) -> Sphere {
         Sphere { center, radius, mat }
     }
 
@@ -20,12 +20,12 @@ impl Sphere {
 
 impl Hittable for Sphere {
 
-    fn hit(&self, r: Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
         let oc: Vector3 = r.origin - self.center;
 
-        let a: f64 = r.direction.magnitude_squared(); // remember vec dotted with itself is the equivalent to its length squared
-        let half_b: f64 = Vector3::dot(&oc, &r.direction); // 2 cancelled out
-        let c: f64 = oc.magnitude_squared() - self.radius * self.radius;
+        let a: f32 = r.direction.magnitude_squared(); // remember vec dotted with itself is the equivalent to its length squared
+        let half_b: f32 = Vector3::dot(&oc, &r.direction); // 2 cancelled out
+        let c: f32 = oc.magnitude_squared() - self.radius * self.radius;
 
         let discriminant = half_b * half_b - a * c; // here too
         if discriminant < 0.0 {
