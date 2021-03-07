@@ -1,5 +1,5 @@
 # rustracer
-A ray/path tracer written in rust.
+An implementation of a ray tracer in Rust [[credit to  the great book series by Peter Shirley](https://raytracing.github.io/)].
 
-
-Currently a work in progress.
+Still a work in progress, but in the meanwhile, here's a pic I've rendered so far-
+![marbles](renders/marbles.png)
