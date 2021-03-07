@@ -22,18 +22,18 @@ extern crate rand;
 use rand::prelude::*;
 use std::sync::Arc;
 
-fn coloray(r: Ray, world: &dyn Hittable, depth: u8) -> Color {
+fn coloray(r: &Ray, world: &dyn Hittable, depth: u8) -> Color {
     if depth <= 0 { return Color::zeros(); }
 
     let mut rec = HitRecord::new();
 
-    if world.hit(r, 0.001, f32::INFINITY, &mut rec) {
+    if world.hit(&r, 0.001, f32::INFINITY, &mut rec) {
         
         let attenuation: Color = rec.mat.get_attenuation();
         let scatter_ray: Ray = rec.mat.get_scatter_ray(r, &rec);
 
-        if rec.mat.scatter(&rec, scatter_ray) {
-            return attenuation * coloray(scatter_ray, world, depth -1);
+        if rec.mat.scatter(&rec, &scatter_ray) {
+            return attenuation * coloray(&scatter_ray, world, depth -1);
         }
         return Color::zeros();
     }
@@ -107,7 +107,7 @@ fn main() {
 
     // image scaling
     const ASPECT_RATIO: f32 = 3.0 / 2.0;
-    const WIDTH: u32 = 200;
+    const WIDTH: u32 = 1200;
     const HEIGHT: u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
     const SAMPLES_PER_PIXEL: u32 = 500;
     const MAX_DEPTH: u8 = 50;
@@ -138,12 +138,12 @@ fn main() {
 
             let mut pixel_color = Color::zeros();
 
-            for _s   in 0..100 {
+            for _ in 0..SAMPLES_PER_PIXEL {
                 let u = (i as f32 + rng.gen_range(0.0..1.0)) / ((WIDTH - 1) as f32);
                 let v = (j as f32 + rng.gen_range(0.0..1.0)) / ((HEIGHT - 1) as f32);
 
                 let r: Ray = cam.get_ray(u, v);
-                pixel_color += coloray(r, &world, MAX_DEPTH);
+                pixel_color += coloray(&r, &world, MAX_DEPTH);
             }
             write_color(pixel_color, SAMPLES_PER_PIXEL);
         }

@@ -20,7 +20,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
 
-    fn hit(&self, r: Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
         let oc: Vector3 = r.origin - self.center;
 
         let a: f32 = r.direction.magnitude_squared(); // remember vec dotted with itself is the equivalent to its length squared

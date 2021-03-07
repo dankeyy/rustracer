@@ -3,9 +3,9 @@ use rand::prelude::*;
 
 
 pub trait Material {
-    fn scatter(&self, rec: &HitRecord, scattered: Ray) -> bool;
+    fn scatter(&self, rec: &HitRecord, scattered: &Ray) -> bool;
     fn get_attenuation(&self) -> Color;
-    fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray;
+    fn get_scatter_ray(&self, r_in: &Ray, rec: &HitRecord) -> Ray;
 }
 
 
@@ -23,7 +23,7 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _rec: &HitRecord, _scattered: Ray) -> bool { true }
+    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool { true }
 
 
     fn get_attenuation(&self) -> Color {
@@ -31,7 +31,7 @@ impl Material for Lambertian {
     }
 
 
-    fn get_scatter_ray(&self, _r_in: Ray, rec: &HitRecord) -> Ray{
+    fn get_scatter_ray(&self, _r_in: &Ray, rec: &HitRecord) -> Ray{
         let mut scatter_direction: Vector3 = rec.normal + Vector3::random_unit_vector();
         if scatter_direction.near_zero(){
             scatter_direction = rec.normal;
@@ -63,7 +63,7 @@ impl Metal {
 
 
 impl Material for Metal {
-    fn scatter(&self, rec: &HitRecord, scattered: Ray) -> bool {
+    fn scatter(&self, rec: &HitRecord, scattered: &Ray) -> bool {
        Vector3::dot(&scattered.direction, &rec.normal) > 0.0
     }
     
@@ -73,7 +73,7 @@ impl Material for Metal {
     }
 
 
-    fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray{
+    fn get_scatter_ray(&self, r_in: &Ray, rec: &HitRecord) -> Ray{
         let reflected = Vector3::reflect(&r_in.direction.normalized(), &rec.normal);
         Ray::new(rec.p, reflected + self.fuzz * Vector3::random_in_unit_sphere())
     }
@@ -99,11 +99,11 @@ impl Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(&self, _rec: &HitRecord, _scattered: Ray) -> bool {true}
+    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool {true}
 
     fn get_attenuation(&self) -> Color {Color::fromv(1.0)}
 
-    fn get_scatter_ray(&self, r_in: Ray, rec: &HitRecord) -> Ray {
+    fn get_scatter_ray(&self, r_in: &Ray, rec: &HitRecord) -> Ray {
         let refraction_ratio: f32 = if rec.front_face {1.0 / self.ir} else {self.ir};
         let unit_direction: Vector3 = r_in.direction.normalized();
 

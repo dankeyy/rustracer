@@ -24,7 +24,7 @@ impl HitRecord {
         }
     }
 
-    pub fn set_face_normal(&mut self, r: Ray, outward_normal: Vector3) {
+    pub fn set_face_normal(&mut self, r: &Ray, outward_normal: Vector3) {
         self.front_face = Vector3::dot(&r.direction, &outward_normal) < 0.0;
         self.normal = if self.front_face {outward_normal} else {-outward_normal};
     }
@@ -32,5 +32,5 @@ impl HitRecord {
 
 
 pub trait Hittable{
-   fn hit(&self, r: Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool; 
+   fn hit(&self, r: &Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool; 
 }

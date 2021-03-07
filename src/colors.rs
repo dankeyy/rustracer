@@ -18,5 +18,5 @@ pub fn write_color(pixels: Color, samples_per_pixel: u32) {
                  (256.0 * clamp(b, 0.0, 0.999)) as u8,
                  (256.0 * clamp(g, 0.0, 0.999)) as u8,
         )
-        
+
 }
