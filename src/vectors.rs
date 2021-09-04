@@ -169,7 +169,8 @@ impl Vector3 {
             let p = Vector3 {
                 x: rng.gen_range(-1.0..1.0),
                 y: rng.gen_range(-1.0..1.0), 
-                z: 0.0};
+                z: 0.0
+            };
             if p.magnitude_squared() < 1.0 {
                 return p;
             }

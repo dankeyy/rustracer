@@ -1,7 +1,6 @@
 use crate::vectors::{Vector3, Point3};
 
 
-#[derive(Copy, Clone)]
 pub struct Ray {
     pub origin: Point3,
     pub direction: Vector3,
@@ -15,7 +14,7 @@ impl Ray {
         Ray { origin, direction, time }
     }
 
-    pub fn at(self, t: f32) -> Point3 {
+    pub fn at(&self, t: f32) -> Point3 {
         self.origin + t * self.direction
     }
 

@@ -10,7 +10,7 @@ pub trait Material {
 
 
 // Lambertian struct & implementations
-#[derive(Copy, Clone)]
+// #[derive(Copy, Clone)]
 pub struct Lambertian {
     pub albedo: Color
 }
@@ -49,7 +49,7 @@ impl Material for Lambertian {
 
 
 // Metal
-#[derive(Copy, Clone)]
+// #[derive(Copy, Clone)]
 pub struct Metal {
     pub albedo: Color,
     pub fuzz: f32,
@@ -84,7 +84,7 @@ impl Material for Metal {
 }
 
 // Dielectric
-#[derive(Copy, Clone)]
+// #[derive(Copy, Clone)]
 pub struct Dielectric {
     pub ir: f32,
 }
