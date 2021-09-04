@@ -23,7 +23,9 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool { true }
+    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool { 
+        true 
+    }
 
 
     fn get_attenuation(&self) -> Color {
@@ -31,13 +33,15 @@ impl Material for Lambertian {
     }
 
 
-    fn get_scatter_ray(&self, _r_in: &Ray, rec: &HitRecord) -> Ray{
+    fn get_scatter_ray(&self, r_in: &Ray, rec: &HitRecord) -> Ray{
         let mut scatter_direction: Vector3 = rec.normal + Vector3::random_unit_vector();
+
+        // catch degenerate scatter direction 
         if scatter_direction.near_zero(){
             scatter_direction = rec.normal;
         }
 
-        Ray::new(rec.p, scatter_direction)
+        Ray::new(rec.p, scatter_direction, r_in.time)
 
     }
 }
@@ -75,7 +79,7 @@ impl Material for Metal {
 
     fn get_scatter_ray(&self, r_in: &Ray, rec: &HitRecord) -> Ray{
         let reflected = Vector3::reflect(&r_in.direction.normalized(), &rec.normal);
-        Ray::new(rec.p, reflected + self.fuzz * Vector3::random_in_unit_sphere())
+        Ray::new(rec.p, reflected + self.fuzz * Vector3::random_in_unit_sphere(), r_in.time)
     }
 }
 
@@ -99,7 +103,9 @@ impl Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool {true}
+    fn scatter(&self, _rec: &HitRecord, _scattered: &Ray) -> bool {
+        true
+    }
 
     fn get_attenuation(&self) -> Color {Color::fromv(1.0)}
 
@@ -119,6 +125,6 @@ impl Material for Dielectric {
                 Vector3::refract(&unit_direction, &rec.normal, refraction_ratio)
             };
 
-        Ray::new(rec.p, direction)
+        Ray::new(rec.p, direction, r_in.time)
     }
 }

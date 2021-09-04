@@ -2,7 +2,7 @@ use crate::{vectors::*, materials::*};
 use crate::rays::Ray;
 use std::sync::Arc;
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vector3,

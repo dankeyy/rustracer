@@ -6,6 +6,7 @@ mod hittable_list;
 mod sphere;
 mod camera;
 mod materials;
+mod moving_sphere;
 
 use crate::{
             vectors::{Vector3, Color, Point3},
@@ -16,6 +17,7 @@ use crate::{
             sphere::*,
             camera::*,
             materials::*,
+            moving_sphere::*,
 };
 
 extern crate rand;
@@ -66,7 +68,8 @@ fn random_scene() -> HittableList {
                     // diffuse
                     let albedo = Color::random() * Color::random();
                     let sphere_material = Arc::new(Lambertian::new(albedo));
-                    world.add(Box::new(Sphere::new(center, 0.2, sphere_material)));
+                    let center2 = center + Vector3::new(0.0, rng.gen_range(0.0..0.5), 0.0);
+                    world.add(Box::new(MovingSphere::new(center, center2, 0.0, 0.1, 0.2, sphere_material)));
                     
                 } else if choose_mat < 0.95 {
                     // metal
@@ -106,10 +109,10 @@ fn random_scene() -> HittableList {
 fn main() {
 
     // image scaling
-    const ASPECT_RATIO: f32 = 3.0 / 2.0;
-    const WIDTH: u32 = 1200;
+    const ASPECT_RATIO: f32 = 16.0 / 9.0;
+    const WIDTH: u32 = 400;
     const HEIGHT: u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
-    const SAMPLES_PER_PIXEL: u32 = 500;
+    const SAMPLES_PER_PIXEL: u32 = 100;
     const MAX_DEPTH: u8 = 50;
 
     // world
@@ -123,7 +126,7 @@ fn main() {
     let aperture = 0.1;
     let focus_dist = 10.0; //(look_from - look_at).magnitude();
 
-    let cam = Camera::new(look_from, look_at, vup, vfov, ASPECT_RATIO, aperture, focus_dist);
+    let cam = Camera::new(look_from, look_at, vup, vfov, ASPECT_RATIO, aperture, focus_dist, 0.0, 0.1);
 
    // random setup
     let mut rng = thread_rng();
