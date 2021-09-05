@@ -15,13 +15,14 @@ pub type Color = Vector3; // RGB color
 
 
 impl Vector3 {
-
+    #[inline(always)]
     pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
         Vector3 { x, y, z }
 
     }
 
 
+    #[inline(always)]
     pub fn newi(x: i32, y: i32, z: i32) -> Vector3 {
         Vector3 { 
             x: x as f32,
@@ -32,6 +33,7 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn fromv(v: f32) -> Vector3 {
         Vector3 { 
             x: v,
@@ -41,11 +43,13 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn zeros() -> Vector3 {
         Vector3::fromv(0.0)
     }
 
 
+    #[inline(always)]
     pub fn cross(u: &Vector3, v: &Vector3) -> Vector3 {
         Vector3 {
             x: u.y * v.z - u.z * v.y,
@@ -55,21 +59,25 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn dot(u: &Vector3, v: &Vector3) -> f32 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
     
+    #[inline(always)]
     pub fn magnitude_squared(&self) -> f32 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
     
 
+    #[inline(always)]
     pub fn magnitude(&self) -> f32 {
         self.magnitude_squared().sqrt()
     }
 
 
+    #[inline(always)]
     pub fn scaled(&self, n: f32) -> Vector3 {
         Vector3 {
             x: self.x * n,
@@ -79,16 +87,19 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn normalized(&self) -> Vector3 { // unit vector
         self.scaled(1.0 / self.magnitude())
     }
 
 
+    #[inline(always)]
     pub fn print(&self) {
         println!("{} {} {}", self.x, self.y, self.z);
     }
 
 
+    #[inline(always)]
     pub fn random() -> Vector3 {
         let mut rng = thread_rng();
 
@@ -99,6 +110,8 @@ impl Vector3 {
         }
     }
 
+
+    #[inline(always)]
     pub fn random_by_range(min: f32, max: f32) -> Vector3 {
 
         let mut rng = thread_rng();
@@ -110,6 +123,7 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn random_in_unit_sphere() -> Vector3 {
         loop {
             let p: Vector3 = Vector3::random_by_range(-1.0, 1.0);
@@ -120,11 +134,13 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn random_unit_vector() -> Vector3 {
         Vector3::random_in_unit_sphere().normalized()
     }
 
 
+    #[inline(always)]
     pub fn random_in_hemisphere(normal: &Vector3) -> Vector3 {
         let in_unit_sphere: Vector3 = Vector3::random_unit_vector();
 
@@ -136,17 +152,20 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn near_zero(&self) -> bool {
         let s: f32 = 1e-8;
         (self.x < s) && (self.y < s) && (self.z < s)
     }
 
 
+    #[inline(always)]
     pub fn reflect(v: &Vector3, n: &Vector3) -> Vector3{
         (*v) - 2.0 * Vector3::dot(&v, &n) * (*n)
     }
 
 
+    #[inline(always)]
     pub fn refract(uv: &Vector3, n: &Vector3, etai_over_etat: f32) -> Vector3{
         let cos_theta: f32 = Vector3::dot(&-*uv, n).min(1.0);
 
@@ -162,6 +181,7 @@ impl Vector3 {
     }
 
 
+    #[inline(always)]
     pub fn random_in_unit_disk() -> Vector3 {
         let mut rng = thread_rng();
 
@@ -171,6 +191,7 @@ impl Vector3 {
                 y: rng.gen_range(-1.0..1.0), 
                 z: 0.0
             };
+
             if p.magnitude_squared() < 1.0 {
                 return p;
             }
